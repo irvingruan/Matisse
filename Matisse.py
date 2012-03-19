@@ -17,7 +17,7 @@ JPEG_SIGNATURE_OFFSET = 492
 pathToAlbumArtwork = '~/Music/iTunes/Album Artwork/Download/'
 pathToAlbumArtwork = os.path.expanduser(pathToAlbumArtwork)
 
-artworkDumpPath = '~/Desktop/Matisse_Dump/itc_dump/'
+artworkDumpPath = '~/Desktop/Matisse_Dump/'
 artworkDumpPath = os.path.expanduser(artworkDumpPath)
 
 itcDumpPath = '~/Desktop/Matisse_Dump/itc_dump/'
