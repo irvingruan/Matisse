@@ -12,6 +12,8 @@ import mmap
 import contextlib
 import shutil
 
+JPEG_SIGNATURE_OFFSET = 492
+
 pathToAlbumArtwork = '~/Music/iTunes/Album Artwork/Download/'
 pathToAlbumArtwork = os.path.expanduser(pathToAlbumArtwork)
 
@@ -37,7 +39,6 @@ def retrieve_itc_files():
     # Grab only iTunes album artwork files (*.itc)
     for root, dirs, files in os.walk(pathToAlbumArtwork):
         for filename in fnmatch.filter(files, pattern):
-            print( os.path.join(root, filename))
             itc_list.append(os.path.join(root, filename))
                 
     return itc_list
@@ -51,23 +52,37 @@ def create_artwork_dump():
         if e.errno != errno.EEXIST:
             raise Exception("Artwork dump directory already exists!")
             
-# def copy_itc_files(itc_files):
-#     for itc_file in itc_files:
-#         copy(itc_file, artworkDumpPath)
-            
-def parse_itunes_artwork(artwork_file):
+def create_jpeg_from_itc(artwork_file):
     
-    with open(artwork_file, 'r') as itc_file:
-        with contextlib.closing(mmap.mmap(itc_file.fileno(), 0,                access=mmap.ACCESS_READ)) as m:
-            print 'Bytes via 490 - 520 : ', m[490:521]
+    itc_file_handle = open(artwork_file, "r+")
+    byte_data = mmap.mmap(itc_file_handle.fileno(),0)
+    
+    file_size = len(byte_data)
+    new_size = file_size - JPEG_SIGNATURE_OFFSET
+
+    byte_data.move(0, JPEG_SIGNATURE_OFFSET, file_size - JPEG_SIGNATURE_OFFSET)
+    byte_data.flush()
+    byte_data.close()
+    itc_file_handle.truncate(new_size)
+    byte_data = mmap.mmap(itc_file_handle.fileno(),0)
+    
+    jpeg_file = artwork_file.replace('.itc', '.jpeg')
+    os.rename(artwork_file, jpeg_file)
 
 def main():
 
     itc_list = retrieve_itc_files()
     create_artwork_dump()
     
+    # Copy over the .itc files so we don't modify iTunes version
+    # We simply want the album artwork
     for itc_file in itc_list:
         shutil.copy(itc_file, itcDumpPath)
+        
+    new_itc_files = os.listdir(itcDumpPath)
+    for itc_file in new_itc_files:
+        create_jpeg_from_itc(os.path.join(itcDumpPath, itc_file))
+
 
 if __name__ == "__main__":
     main()
