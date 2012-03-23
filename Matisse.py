@@ -14,6 +14,7 @@ import contextlib
 import shutil
 import subprocess
 import mhtml
+import Image
 
 JPEG_SIGNATURE_OFFSET = 492
 
@@ -24,14 +25,9 @@ local_url_prefix = "file://"
 artworkDumpPath = '~/Desktop/MatisseAlbumArtwork/'
 artworkDumpPath = os.path.expanduser(artworkDumpPath)
 
-itcDumpPath = '~/Desktop/MatisseAlbumArtwork/'
-itcDumpPath = os.path.expanduser(itcDumpPath)
-
-"""TO DO"""
 def print_usage():
     print "Usage: ./Matisse.py\n"
 
-"""TO DO"""
 def help():
     raise None
     
@@ -62,8 +58,7 @@ def retrieve_itc_files(album_artwork_path):
 def create_artwork_dump():
     
     try:
-        os.makedirs(artworkDumpPath)
-        os.makedirs(itcDumpPath)
+        os.makedirs(artworkDumpPath+'/artwork')
     except OSError, e:
         if e.errno != errno.EEXIST:
             raise Exception("Artwork dump folder already exists!")
@@ -99,7 +94,7 @@ def create_jpeg_from_itc(artwork_file):
         
 def generate_html():
     try:
-        artwork_jpegs = os.listdir("/Users/irving/Code/Python/Matisse/artwork")
+        artwork_jpegs = os.listdir(artworkDumpPath + "/artwork")
         
         html_output = open('matisse.html', 'w')
         html_output.write(mhtml.header)
@@ -111,16 +106,27 @@ def generate_html():
             html_output.write("\t\t\t<img class=\"content\" src=\"artwork/AlbumArtwork" + str(i+1) + ".jpeg\"/>\n")
             html_output.write("\t\t</div>\n")
         
-        html_output.write(mhtml.body_end)
-        
+        html_output.write(mhtml.body_end)   
         html_output.close()
-        
-        
-        rv = subprocess.Popen('open /Applications/Safari.app ' + os.getcwd() + '/matisse.html', shell=True)
-        rv.wait()
         
     except:
         sys.stderr.write("Error: Unable to generate matisse.html.")
+        sys.exit(-1)
+        
+def deploy_matisse():
+    try:
+        # Copy over the .html, .js, and .css files
+        shutil.move(os.getcwd() + "/matisse.html", artworkDumpPath)
+        matisse_publish_files = os.listdir(os.getcwd() + '/publish')
+        
+        rv = subprocess.Popen('cp -rf ' + os.getcwd() + '/publish/. ' + artworkDumpPath, shell=True)
+        rv.wait()
+        
+        rv = subprocess.Popen('open /Applications/Safari.app ' + artworkDumpPath + '/matisse.html', shell=True)
+        rv.wait()
+        
+    except:
+        sys.stderr.write("Error: Could not publish Matisse Cover Flow.\n")
         sys.exit(-1)
         
 def convert_proc():
@@ -133,17 +139,16 @@ def convert_proc():
     # Copy over the .itc files so we don't modify iTunes version
     # We simply want the album artwork
     for itc_file in itc_list:
-        shutil.copy(itc_file, itcDumpPath)
+        shutil.copy(itc_file, artworkDumpPath+'/artwork')
     
-    new_itc_files = os.listdir(itcDumpPath)
+    artwork_path = artworkDumpPath + 'artwork'
+    new_itc_files = os.listdir(artwork_path)
     for itc_file in new_itc_files:
-        create_jpeg_from_itc(os.path.join(itcDumpPath, itc_file))
+        create_jpeg_from_itc(os.path.join(artwork_path, itc_file))
     
-    print "Finished converting iTunes album artwork files to JPEGs. They are located at " + artworkDumpPath
+    print "Finished converting iTunes album artwork files to JPEGs.\nThey are located at " + artwork_path
     
 
-    
-        
 def main():
     
     if len(sys.argv) > 1:
@@ -154,11 +159,10 @@ def main():
     artwork_item_count = 0
 
     # If we already have the JPEGs, no need to convert it again
-    if not(os.path.exists(artworkDumpPath) and os.listdir(artworkDumpPath)):
-        
-        # convert_proc()
-        
+    if not(os.path.exists(artworkDumpPath) and os.listdir(artworkDumpPath)):       
+        convert_proc()
         generate_html()
+        deploy_matisse()
        
     else:
         sys.stderr.write("Album artwork dump folder already exists. Recreate anyway? (y/n):")
@@ -169,8 +173,10 @@ def main():
             key = 0
             
         if key == 'y':
-            # convert_proc()
+            convert_proc()
             generate_html()
+            deploy_matisse()
+            
         elif key == 'n':
             sys.stderr.write("\nView your artwork at " + artworkDumpPath)
         elif key == 0:
