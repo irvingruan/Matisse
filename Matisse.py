@@ -12,10 +12,13 @@ import errno
 import mmap
 import contextlib
 import shutil
+import subprocess
 
 JPEG_SIGNATURE_OFFSET = 492
+
 artwork_item_count = 0
 artwork_name_prefix = "AlbumArtwork"
+local_url_prefix = "file://"
 
 artworkDumpPath = '~/Desktop/MatisseAlbumArtwork/'
 artworkDumpPath = os.path.expanduser(artworkDumpPath)
@@ -94,6 +97,7 @@ def create_jpeg_from_itc(artwork_file):
         sys.stderr.write("Error: could not convert %s to JPEG." % str(artwork_file))
         
 def convert_proc():
+    global local_url_prefix
     
     album_artwork_path = locate_album_artwork_path()
     itc_list = retrieve_itc_files(album_artwork_path)
@@ -109,6 +113,11 @@ def convert_proc():
         create_jpeg_from_itc(os.path.join(itcDumpPath, itc_file))
     
     print "Finished converting iTunes album artwork files to JPEGs. They are located at " + artworkDumpPath
+    
+    
+    rv = subprocess.Popen('open /Applications/Safari.app ' + os.getcwd() + '/sample.html', shell=True)
+    rv.wait()
+    
         
 def main():
     
