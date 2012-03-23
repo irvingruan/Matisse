@@ -116,13 +116,13 @@ def generate_html():
 def deploy_matisse():
     try:
         # Copy over the .html, .js, and .css files
-        shutil.move(os.getcwd() + "/matisse.html", artworkDumpPath)
+        shutil.move(os.getcwd() + "/index.html", artworkDumpPath)
         matisse_publish_files = os.listdir(os.getcwd() + '/publish')
         
         rv = subprocess.Popen('cp -rf ' + os.getcwd() + '/publish/. ' + artworkDumpPath, shell=True)
         rv.wait()
         
-        rv = subprocess.Popen('open /Applications/Safari.app ' + artworkDumpPath + '/matisse.html', shell=True)
+        rv = subprocess.Popen('open /Applications/Safari.app ' + artworkDumpPath + '/index.html', shell=True)
         rv.wait()
         
     except:
