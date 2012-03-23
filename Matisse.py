@@ -17,10 +17,10 @@ JPEG_SIGNATURE_OFFSET = 492
 artwork_item_count = 0
 artwork_name_prefix = "AlbumArtwork"
 
-artworkDumpPath = '~/Desktop/Matisse_Dump/'
+artworkDumpPath = '~/Desktop/MatisseAlbumArtwork/'
 artworkDumpPath = os.path.expanduser(artworkDumpPath)
 
-itcDumpPath = '~/Desktop/Matisse_Dump/itc_dump/'
+itcDumpPath = '~/Desktop/MatisseAlbumArtwork/'
 itcDumpPath = os.path.expanduser(itcDumpPath)
 
 """TO DO"""
@@ -123,7 +123,7 @@ def main():
     if not(os.path.exists(artworkDumpPath) and os.listdir(artworkDumpPath)):
         
         convert_proc()
-        
+       
     else:
         sys.stderr.write("Album artwork dump folder already exists. Recreate anyway? (y/n):")
         key = 0
