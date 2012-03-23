@@ -13,6 +13,7 @@ import mmap
 import contextlib
 import shutil
 import subprocess
+import mhtml
 
 JPEG_SIGNATURE_OFFSET = 492
 
@@ -96,6 +97,32 @@ def create_jpeg_from_itc(artwork_file):
     except:
         sys.stderr.write("Error: could not convert %s to JPEG." % str(artwork_file))
         
+def generate_html():
+    try:
+        artwork_jpegs = os.listdir("/Users/irving/Code/Python/Matisse/artwork")
+        
+        html_output = open('matisse.html', 'w')
+        html_output.write(mhtml.header)
+        html_output.write(mhtml.body_start)
+        
+        item = 0
+        for i in range(0, len(artwork_jpegs) - 200):
+            html_output.write("\t\t<div class=\"item\">\n")
+            html_output.write("\t\t\t<img class=\"content\" src=\"artwork/AlbumArtwork" + str(i+1) + ".jpeg\"/>\n")
+            html_output.write("\t\t</div>\n")
+        
+        html_output.write(mhtml.body_end)
+        
+        html_output.close()
+        
+        
+        rv = subprocess.Popen('open /Applications/Safari.app ' + os.getcwd() + '/matisse.html', shell=True)
+        rv.wait()
+        
+    except:
+        sys.stderr.write("Error: Unable to generate matisse.html.")
+        sys.exit(-1)
+        
 def convert_proc():
     global local_url_prefix
     
@@ -114,9 +141,7 @@ def convert_proc():
     
     print "Finished converting iTunes album artwork files to JPEGs. They are located at " + artworkDumpPath
     
-    
-    rv = subprocess.Popen('open /Applications/Safari.app ' + os.getcwd() + '/sample.html', shell=True)
-    rv.wait()
+
     
         
 def main():
@@ -131,7 +156,9 @@ def main():
     # If we already have the JPEGs, no need to convert it again
     if not(os.path.exists(artworkDumpPath) and os.listdir(artworkDumpPath)):
         
-        convert_proc()
+        # convert_proc()
+        
+        generate_html()
        
     else:
         sys.stderr.write("Album artwork dump folder already exists. Recreate anyway? (y/n):")
@@ -142,7 +169,8 @@ def main():
             key = 0
             
         if key == 'y':
-            convert_proc()
+            # convert_proc()
+            generate_html()
         elif key == 'n':
             sys.stderr.write("\nView your artwork at " + artworkDumpPath)
         elif key == 0:
