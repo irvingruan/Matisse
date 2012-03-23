@@ -9,7 +9,7 @@ Written by Irving Y. Ruan, <irvingruan@gmail.com>
 About
 =====
 
-
+![Sample Output](https://github.com/irvingruan/Matisse/raw/master/SampleCoverFlow.png)
 
 
 Named after the famous French artist and printmaker [Henri Matisse](http://en.wikipedia.org/wiki/Henri_Matisse), Matisse is a Python tool that will find your iTunes album artwork files, convert them from their unreadable format, and create a native Cover Flow viewing experience on your browser.
