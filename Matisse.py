@@ -36,12 +36,12 @@ def locate_album_artwork_path():
     album_artwork_path = os.path.expanduser("~/Music")
     
     for root, subFolders, files in os.walk(album_artwork_path):
-	    for sf in subFolders:
-	        # We only want the Download folder, not Cache
-			if sf.lower() == "download":
-			    path_components = os.path.join(root, sf).split("/")
-			    if path_components[-2].lower() == "album artwork":
-				    return os.path.join(root, sf)
+        for sf in subFolders:
+            # We only want the Download folder, not Cache
+            if sf.lower() == "download":
+                path_components = os.path.join(root, sf).split("/")
+                if path_components[-2].lower() == "album artwork":
+                    return os.path.join(root, sf)
 				
 def retrieve_itc_files(album_artwork_path):
     
