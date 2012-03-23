@@ -16,8 +16,8 @@ Named after the French artist and printmaker [Henri Matisse](http://en.wikipedia
 
 Matisse currently only runs on OS X and requires Python 2.0 or higher.
 
-Usage
-=====
+## Usage
+
 To run, simply type at the Terminal:
 
 `./Matisse.py`
@@ -26,6 +26,6 @@ And Matisse will find the latest downloaded versions of your iTunes album artwor
 
 To see a sample of the generated effect, open the included `sample.html` in your browser.
 
-Legal
-=====
+## Legal
+
 Matisse is Copyright (c) 2012 Irving Ruan and is BSD licensed. The full text of the license can be found in LICENSE.
