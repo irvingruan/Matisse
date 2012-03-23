@@ -14,9 +14,6 @@ import shutil
 
 JPEG_SIGNATURE_OFFSET = 492
 
-pathToAlbumArtwork = '~/Music/iTunes/Album Artwork/Download/'
-pathToAlbumArtwork = os.path.expanduser(pathToAlbumArtwork)
-
 artworkDumpPath = '~/Desktop/Matisse_Dump/'
 artworkDumpPath = os.path.expanduser(artworkDumpPath)
 
@@ -30,14 +27,22 @@ def usage():
 """TO DO"""
 def help():
     raise None
-
-def retrieve_itc_files():
+    
+def locate_album_artwork_path():
+    album_artwork_path = os.path.expanduser("~/Music")
+    
+    for root, subFolders, files in os.walk(album_artwork_path):
+	    for sf in subFolders:
+			if sf.lower() == "album artwork":
+				return os.path.join(root, sf)
+				
+def retrieve_itc_files(album_artwork_path):
     
     itc_list = []
     pattern = '*.itc'
 
     # Grab only iTunes album artwork files (*.itc)
-    for root, dirs, files in os.walk(pathToAlbumArtwork):
+    for root, dirs, files in os.walk(album_artwork_path):
         for filename in fnmatch.filter(files, pattern):
             itc_list.append(os.path.join(root, filename))
                 
@@ -50,7 +55,7 @@ def create_artwork_dump():
         os.makedirs(itcDumpPath)
     except OSError, e:
         if e.errno != errno.EEXIST:
-            raise Exception("Artwork dump directory already exists!")
+            raise Exception("Artwork dump folder already exists!")
             
 def create_jpeg_from_itc(artwork_file):
     
@@ -71,7 +76,9 @@ def create_jpeg_from_itc(artwork_file):
 
 def main():
 
-    itc_list = retrieve_itc_files()
+    album_artwork_path = locate_album_artwork_path()
+    
+    itc_list = retrieve_itc_files(album_artwork_path)
     create_artwork_dump()
     
     # Copy over the .itc files so we don't modify iTunes version
