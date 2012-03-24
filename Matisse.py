@@ -14,7 +14,6 @@ import contextlib
 import shutil
 import subprocess
 import mhtml
-import Image
 
 JPEG_SIGNATURE_OFFSET = 492
 
@@ -96,15 +95,15 @@ def generate_html():
     try:
         artwork_jpegs = os.listdir(artworkDumpPath + "/artwork")
         
-        html_output = open('matisse.html', 'w')
+        html_output = open('index.html', 'w')
         html_output.write(mhtml.header)
         html_output.write(mhtml.body_start)
         
         item = 0
         for i in range(0, len(artwork_jpegs) - 200):
-            html_output.write("\t\t<div class=\"item\">\n")
-            html_output.write("\t\t\t<img class=\"content\" src=\"artwork/AlbumArtwork" + str(i+1) + ".jpeg\"/>\n")
-            html_output.write("\t\t</div>\n")
+            html_output.write("\t\t\t<div class=\"item\">\n")
+            html_output.write("\t\t\t\t<img class=\"content\" src=\"artwork/AlbumArtwork" + str(i+1) + ".jpeg\"/>\n")
+            html_output.write("\t\t\t</div>\n")
         
         html_output.write(mhtml.body_end)   
         html_output.close()
