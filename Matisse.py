@@ -146,7 +146,7 @@ def generate_html():
         html_output.close()
         
     except:
-        sys.stderr.write("Error: Unable to generate matisse.html.")
+        sys.stderr.write("Error: Unable to generate index.html.")
         sys.exit(-1)
         
 def deploy_matisse():

@@ -1,16 +1,13 @@
 Matisse
 =====
 
-Your iTunes album artwork on the web
-=====
+## Your iTunes album artwork on the web
 
 Written by Irving Y. Ruan, <irvingruan@gmail.com>
 
-About
-=====
+## About
 
 ![Sample Output](https://github.com/irvingruan/Matisse/raw/master/SampleCoverFlow.png)
-
 
 Named after the French artist and printmaker [Henri Matisse](http://en.wikipedia.org/wiki/Henri_Matisse), Matisse is a Python tool that will find your iTunes album artwork files, convert them from their unreadable format, and make your collection publish-ready through an elegant Cover Flow visual.
 
